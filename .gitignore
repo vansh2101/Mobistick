@@ -1,3 +1,6 @@
 server/node_modules
 motion_detector/node_modules
 motion_detector/.expo
+node_modules
+.idea
+.env
