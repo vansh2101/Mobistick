@@ -8,9 +8,12 @@ import io from 'socket.io-client';
 const socket = io.connect('http://192.168.29.134:8000');
 
 
-export default function Joystick() {
+export default function Joystick({route, navigation}) {
+  const {code} = route.params;
   const [isMoving, setIsMoving] = useState(false);
   const [direction, setDirection] = useState(null);
+
+  socket.emit('connect', {room: code})
 
   useEffect(() => {
     let previousX = 0;

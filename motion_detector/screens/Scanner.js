@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Button, Dimensions } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 
-export default function Scanner() {
+export default function Scanner({navigation}) {
   const [permission, setPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -19,6 +19,7 @@ export default function Scanner() {
 
   const handleScanned = ({ type, data }) => {
     setScanned(true);
+    navigation.navigate('joystick', {code: data})
     console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
