@@ -22,7 +22,8 @@
     "react-native-screens": "~3.20.0",
     "react-navigation": "^4.4.4",
     "socket.io-client": "^4.6.1",
-    "expo-barcode-scanner": "~12.3.2"
+    "expo-barcode-scanner": "~12.3.2",
+    "@expo/vector-icons": "^13.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

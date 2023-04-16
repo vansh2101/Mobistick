@@ -3,17 +3,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 import {TapGestureHandler, State, GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Octicons} from '@expo/vector-icons'
 
 
 //todo: get ip address from the device
-const socket = io.connect('http://192.168.29.134:8000');
+const socket = io.connect('http://192.168.1.14:8000');
 
 
 export default function Joystick({route, navigation}) {
   const {code} = route.params;
 
-  const [isMoving, setIsMoving] = useState(false);
-  const [direction, setDirection] = useState(null);
   const doubleTapRef = useRef(null);
 
   const [{ x, y, z }, setData] = useState({
@@ -72,49 +71,6 @@ export default function Joystick({route, navigation}) {
   };
 
   useEffect(() => {
-    // let previousX = 0;
-    // let previousY = 0;
-    // let previousZ = 0;
-    // let threshold = 1.2;
-
-    // const listener = DeviceMotion.addListener((accelerometerData) => {
-    //   const { x, y, z } = accelerometerData.accelerationIncludingGravity;
-    //   const deltaX = previousX - x;
-    //   const deltaY = Math.abs(previousY - y);
-    //   const deltaZ = Math.abs(previousZ - z);
-
-    //   if (x > threshold) {
-    //     setIsMoving(true);
-    //     setDirection('right');
-    //     // console.log('x: ', deltaX)
-    //   } 
-    //   else if (z > threshold) {
-    //     setIsMoving(true);
-    //     setDirection('up');
-    //     // console.log('y: ', y)
-    //   }
-    //   else {
-    //     setIsMoving(false);
-    //   }
-
-
-    //   if (isMoving){
-    //   // socket.emit('transmit', {
-    //     //   status: 'moved',
-    //     //   direction: direction
-    //     // })
-    //     // console.log('just moved')
-
-    //     previousX = x;
-    //     previousY = y;
-    //     previousZ = z;
-    //   }
-    // });
-
-    // return () => {
-    //   listener.remove();
-    // };
-
     _subscribe();
     Accelerometer.setUpdateInterval(100)
     return () => _unsubscribe();
@@ -164,10 +120,10 @@ export default function Joystick({route, navigation}) {
       <TapGestureHandler onHandlerStateChange={onSingleTap} waitFor={doubleTapRef}>
         <TapGestureHandler ref={doubleTapRef} onHandlerStateChange={onDoubleTap} numberOfTaps={2}>
           <View style={styles.container}>
-            <Text>State: {isMoving ? 'Moving' : 'Still'}</Text>
-            <Text>x: {x}</Text>
-            <Text>y: {y}</Text>
-            <Text>z: {z}</Text>
+            <Octicons name='triangle-up' size={100} color={'black'} style={[styles.icon, {top: 0, left: '41%'}]} />
+            <Octicons name='triangle-left' size={100} color={'black'} style={[styles.icon, {left: 3, top: '42%'}]} />
+            <Octicons name='triangle-down' size={100} color={'black'} style={[styles.icon, {bottom: 0, left: '41%'}]} />
+            <Octicons name='triangle-right' size={100} color={'black'} style={[styles.icon, {right: 3, top: '42%'}]} />
           </View>
         </TapGestureHandler>
       </TapGestureHandler>
@@ -181,5 +137,11 @@ const styles= StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+    width: '100%'
+  },
+
+  icon: {
+    position:'absolute',
   }
 })
