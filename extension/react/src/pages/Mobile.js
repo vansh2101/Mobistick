@@ -1,16 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import QRCode from "react-qr-code";
 import {Container} from "react-bootstrap";
+import io from 'socket.io-client';
+
+
+const socket = io.connect('http://localhost:8000');
 
 function Mobile() {
 
     // useState to store token
     const [token, setToken] = useState()
 
+    // socket.on('receive', data => {
+    //     const {comm, key} = data;
+    //     //key is the key to be pressed
+    // })
+
     const fetchToken = () => {
         fetch("http://localhost:8000/token")
             .then(res => res.text())
-            .then(res => setToken(res))
+            .then(res => {
+                setToken(res)
+                socket.emit('connect_device', {room: res})
+            })
     }
 
     // wait for the token to be fetched
