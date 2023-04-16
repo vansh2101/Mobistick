@@ -16,6 +16,17 @@ export default function Joystick({route, navigation}) {
   const [direction, setDirection] = useState(null);
   const doubleTapRef = useRef(null);
 
+  const [{ x, y, z }, setData] = useState({
+    x: 0,
+    y: 0,
+    z: 0,
+  });
+  const [subscription, setSubscription] = useState(null);
+
+  thresholdX = 2;
+  thresholdY = 0.2;
+  thresholdZ = 1.2;
+
   socket.emit('connect_device', {room: code})
 
   const onSingleTap = event => {
@@ -48,50 +59,104 @@ export default function Joystick({route, navigation}) {
     socket.emit('transmit', data)
   }
 
+
+  const _subscribe = () => {
+    setSubscription(
+      Accelerometer.addListener(setData)
+    );
+  };
+
+  const _unsubscribe = () => {
+    subscription && subscription.remove();
+    setSubscription(null);
+  };
+
   useEffect(() => {
-    let previousX = 0;
-    let previousY = 0;
-    let previousZ = 0;
-    let threshold = 1.2;
+    // let previousX = 0;
+    // let previousY = 0;
+    // let previousZ = 0;
+    // let threshold = 1.2;
 
-    const listener = DeviceMotion.addListener((accelerometerData) => {
-      const { x, y, z } = accelerometerData.acceleration;
-      const deltaX = previousX - x;
-      const deltaY = Math.abs(previousY - y);
-      const deltaZ = Math.abs(previousZ - z);
+    // const listener = DeviceMotion.addListener((accelerometerData) => {
+    //   const { x, y, z } = accelerometerData.accelerationIncludingGravity;
+    //   const deltaX = previousX - x;
+    //   const deltaY = Math.abs(previousY - y);
+    //   const deltaZ = Math.abs(previousZ - z);
 
-      if (x > threshold) {
-        setIsMoving(true);
-        setDirection('right');
-        // console.log('x: ', x)
-      } 
-      else if (y > threshold) {
-        setIsMoving(true);
-        setDirection('up');
-        // console.log('y: ', y)
-      }
-      else {
-        setIsMoving(false);
-      }
+    //   if (x > threshold) {
+    //     setIsMoving(true);
+    //     setDirection('right');
+    //     // console.log('x: ', deltaX)
+    //   } 
+    //   else if (z > threshold) {
+    //     setIsMoving(true);
+    //     setDirection('up');
+    //     // console.log('y: ', y)
+    //   }
+    //   else {
+    //     setIsMoving(false);
+    //   }
 
 
-      if (isMoving){
-      // socket.emit('transmit', {
-        //   status: 'moved',
-        //   direction: direction
-        // })
-        // console.log('just moved')
+    //   if (isMoving){
+    //   // socket.emit('transmit', {
+    //     //   status: 'moved',
+    //     //   direction: direction
+    //     // })
+    //     // console.log('just moved')
 
-        previousX = x;
-        previousY = y;
-        previousZ = z;
-      }
-    });
+    //     previousX = x;
+    //     previousY = y;
+    //     previousZ = z;
+    //   }
+    // });
 
-    return () => {
-      listener.remove();
-    };
+    // return () => {
+    //   listener.remove();
+    // };
+
+    _subscribe();
+    Accelerometer.setUpdateInterval(100)
+    return () => _unsubscribe();
   }, []);
+
+
+  useEffect(() => {
+    if (x > thresholdX){
+      const data = {
+        command: 'up',
+        key: 'w'
+      }
+      emit_data(data)
+
+    }
+    else if (Math.abs(x) > thresholdX){
+      const data = {
+        command: 'down',
+        key: 's'
+      }
+      emit_data(data)
+
+    }
+
+    if (z > thresholdZ){
+      const data = {
+        command: 'right',
+        key: 'd'
+      }
+      emit_data(data)
+
+    }
+    else if(Math.abs(z) > thresholdZ){
+      const data = {
+        command: 'left',
+        key: 'a'
+      }
+      emit_data(data)
+
+    }
+
+  }, [x,y,z])
 
 
   return (
@@ -100,6 +165,9 @@ export default function Joystick({route, navigation}) {
         <TapGestureHandler ref={doubleTapRef} onHandlerStateChange={onDoubleTap} numberOfTaps={2}>
           <View style={styles.container}>
             <Text>State: {isMoving ? 'Moving' : 'Still'}</Text>
+            <Text>x: {x}</Text>
+            <Text>y: {y}</Text>
+            <Text>z: {z}</Text>
           </View>
         </TapGestureHandler>
       </TapGestureHandler>
