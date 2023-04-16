@@ -17,27 +17,12 @@ const app = express();
 app.use(cors());
 
 
-/*// [auth0 STARTS]
-
-const { auth } = require('express-openid-connect');
-
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: 'a long, randomly-generated string stored in env',
-  baseURL: 'http://localhost:3000',
-  clientID: 'B56lFOlb3NMsumqg8QBWgw6V21S2BWzq',
-  issuerBaseURL: 'https://dev-j2rnlyab.us.auth0.com'
-};
-
-app.use(auth(config));
-
-// [auth0 ENDS]*/
-
-
 const server = http.createServer(app);
-//? Server functions
 
+let server_devices = {};
+
+
+//? Server functions
 
 const io = new Server(server, {
     cors: {
@@ -50,14 +35,21 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on('connect', data => {
+    socket.on('connect_device', data => {
         const { room } = data;
         socket.join(room)
+
+        socket.on('transmit', data => {
+            console.log(data)
+            io.in(room).emit('receive', data)
+        })
+
     })
 
-    socket.on('transmit', data => {
-        io.in(room).emit('receive', data)
-    })
+    // socket.on('server_connect', data => {
+    //     server_devices[socket.id] = data.code;
+    // })
+
 })
 
 //? Routes
