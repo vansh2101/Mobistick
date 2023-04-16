@@ -6,12 +6,18 @@ const {Server} = require('socket.io');
 
 require('dotenv').config();
 
+
 //? Global variables
+
+// token
+const secret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
 const app = express();
 
 app.use(cors());
 
-// [auth0 STARTS]
+
+/*// [auth0 STARTS]
 
 const { auth } = require('express-openid-connect');
 
@@ -26,13 +32,13 @@ const config = {
 
 app.use(auth(config));
 
-// [auth0 ENDS]
+// [auth0 ENDS]*/
 
 
 const server = http.createServer(app);
-
-
 //? Server functions
+
+
 const io = new Server(server, {
     cors: {
         origin: '*',
@@ -46,14 +52,13 @@ io.on('connection', (socket) => {
 
     socket.on('connect', data => {
         const { room } = data;
-        socket.join(room) 
+        socket.join(room)
     })
 
     socket.on('transmit', data => {
         io.in(room).emit('receive', data)
     })
 })
-
 
 //? Routes
 
@@ -67,9 +72,8 @@ app.get('/', (req, res) => {
   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
 });
 
-
 app.get("/token", (req, res) => {
-    const secret = crypto.randomBytes(32).toString("base64");
+    // create a 16 character random string
     res.send(secret);
 })
 
