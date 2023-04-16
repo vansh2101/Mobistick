@@ -17,24 +17,6 @@ const app = express();
 app.use(cors());
 
 
-/*// [auth0 STARTS]
-
-const { auth } = require('express-openid-connect');
-
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: 'a long, randomly-generated string stored in env',
-  baseURL: 'http://localhost:3000',
-  clientID: 'B56lFOlb3NMsumqg8QBWgw6V21S2BWzq',
-  issuerBaseURL: 'https://dev-j2rnlyab.us.auth0.com'
-};
-
-app.use(auth(config));
-
-// [auth0 ENDS]*/
-
-
 const server = http.createServer(app);
 //? Server functions
 

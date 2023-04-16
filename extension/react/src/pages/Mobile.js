@@ -28,12 +28,12 @@ function Mobile() {
             <Container className={"center "}>
                 <h1>Connect Phone</h1>
 
-                <div style={{height: "auto", margin: "0 auto", maxWidth: 64, width: "100%"}}>
+                <div style={{height: "auto", margin: "0 auto", maxWidth: 128, width: "100%"}}>
                     {token ? <QRCode
-                        size={256}
+                        size={512}
                         style={{height: "auto", maxWidth: "100%", width: "100%"}}
                         value={token}
-                        viewBox={`0 0 256 256`}
+                        viewBox={`0 0 512 512`}
                     /> : <p>Loading...</p>}
                 </div>
             </Container>

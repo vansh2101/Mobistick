@@ -1,4 +1,3 @@
-// Define a function that will execute the command received from the server
 function press_key(command) {
     const cmd = command.toLowerCase();
     // use ternary operator to check if the command is 'up', 'down', 'left', or 'right'
@@ -7,7 +6,6 @@ function press_key(command) {
     document.dispatchEvent(keyboardEvent);
 }
 
-// Create a function that will make the GET request to the server
 function makeRequest() {
   // Use the XMLHttpRequest object to make a GET request to the server
   var xhr = new XMLHttpRequest();
@@ -21,7 +19,6 @@ function makeRequest() {
     }
   }
 
-  // Send the request
   xhr.send();
 }
 
